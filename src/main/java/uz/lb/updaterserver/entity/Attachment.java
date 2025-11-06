@@ -29,6 +29,10 @@ public class Attachment implements Serializable {
     @Column(nullable = false)
     String fileName;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    Version version;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     Application application;

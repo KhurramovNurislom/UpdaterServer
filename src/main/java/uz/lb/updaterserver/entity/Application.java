@@ -30,9 +30,19 @@ public class Application implements Serializable {
     @Column(nullable = false, unique = true)
     String name;
 
+    String descriptions;
+
+//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JsonManagedReference
+//    User user;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     List<Version> versions;
+
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+//    @JsonManagedReference
+//    List<Attachment> attachments;
 
     @JsonIgnore
     @CreationTimestamp

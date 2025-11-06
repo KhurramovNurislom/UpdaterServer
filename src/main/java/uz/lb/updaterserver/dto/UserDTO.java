@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import uz.lb.updaterserver.entity.Application;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -15,8 +18,5 @@ import lombok.experimental.FieldDefaults;
 public class UserDTO {
     Long id;
     String login;
-    Boolean passwordChanged;
-    UserRoleAssignmentDTO userRoleAssignmentDTO;
-    Long createdByUserId;
-    Long updatedByUserId;
+    List<ApplicationDTO> applications;
 }

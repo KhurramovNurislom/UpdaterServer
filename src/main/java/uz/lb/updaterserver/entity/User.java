@@ -2,6 +2,7 @@ package uz.lb.updaterserver.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -11,6 +12,7 @@ import uz.lb.updaterserver.enums.GeneralStatus;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -36,9 +38,13 @@ public class User implements Serializable {
     @Column(nullable = false, name = "password")
     String password;
 
-    @JsonIgnore
-    @Column(name = "description")
-    String description;
+//    @JsonIgnore
+//    @Column(name = "description")
+//    String description;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    List<Application> applications;
 
     @JsonIgnore
     @Column(name = "status")
