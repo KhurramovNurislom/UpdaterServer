@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,4 +17,8 @@ import lombok.experimental.FieldDefaults;
 public class ApplicationDTO {
     Long id;
     String name;
+    String descriptions;
+    List<VersionDTO> versions;
+    Long createdUserId;
+    Long updatedUserId;
 }

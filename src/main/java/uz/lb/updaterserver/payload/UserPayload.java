@@ -27,4 +27,6 @@ public class UserPayload {
     GeneralStatus status;
 
     Boolean visible;
+
+
 }

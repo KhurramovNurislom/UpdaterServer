@@ -9,5 +9,5 @@ import uz.lb.updaterserver.entity.Application;
 @Transactional
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
 
-
+Application findApplicationByName(String name);
 }

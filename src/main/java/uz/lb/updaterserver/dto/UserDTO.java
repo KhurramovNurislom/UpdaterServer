@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import uz.lb.updaterserver.entity.Application;
+import uz.lb.updaterserver.enums.GeneralStatus;
 
 import java.util.List;
 
@@ -18,5 +19,8 @@ import java.util.List;
 public class UserDTO {
     Long id;
     String login;
+    String role;
     List<ApplicationDTO> applications;
+    Long createdUserId;
+    Long updatedUserId;
 }

@@ -14,5 +14,6 @@ import org.springframework.data.web.ProjectedPayload;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VersionPayload {
+    String name;
 
 }

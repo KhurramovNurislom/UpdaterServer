@@ -44,6 +44,12 @@ public class Application implements Serializable {
 //    @JsonManagedReference
 //    List<Attachment> attachments;
 
+    @Column(name = "created_by_user_id")
+    Long createdByUserId;
+
+    @Column(name = "updated_by_user_id")
+    Long updatedByUserId;
+
     @JsonIgnore
     @CreationTimestamp
     Date createdAt;

@@ -3,7 +3,6 @@ package uz.lb.updaterserver.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -59,13 +58,6 @@ public class ExceptionHandlerController {
                 .body(new ResultDTO().error(e.getMessage()));
     }
 
-    @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
-    public ResponseEntity<ResultDTO> handleAccessDenied(RuntimeException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
-                new ResultDTO("You do not have permission.",
-                false,
-                ex.getMessage()));
-    }
 
     // JSON xato bo'lsa (masalan, } yoki vergul noto‘g‘ri)
     @ExceptionHandler(HttpMessageNotReadableException.class)

@@ -32,7 +32,6 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 public class AttachmentService {
     private final AttachmentRepository attachmentRepository;
     private final UserRepository userRepository;

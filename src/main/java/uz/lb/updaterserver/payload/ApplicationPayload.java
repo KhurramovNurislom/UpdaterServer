@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.web.ProjectedPayload;
 
+import java.util.List;
+
 @Data
 @ProjectedPayload
 @NoArgsConstructor
@@ -16,4 +18,5 @@ import org.springframework.data.web.ProjectedPayload;
 public class ApplicationPayload {
     String name;
     String descriptions;
+    List<Long> versionIds;
 }

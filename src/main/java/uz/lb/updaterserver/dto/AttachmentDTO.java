@@ -22,5 +22,11 @@ public class AttachmentDTO {
     String extension;
     String link;
     Float fileSize;
-    Long userId;
+
+    Long versionId;
+    Long applicationId;
+
+    Long createdUserId;
+    Long updatedUserId;
+
 }

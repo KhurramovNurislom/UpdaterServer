@@ -13,6 +13,22 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY, content = JsonInclude.Include.NON_NULL)
 public class VersionDTO {
+
     Long id;
-    String name;
+
+    String version;
+
+    String url;
+
+    String hash;
+
+    String releaseNotes;
+
+    Long userId;
+    Long applicationId;
+
+    String attachmentHashID;
+
+    Long createdUserId;
+    Long updatedUserId;
 }

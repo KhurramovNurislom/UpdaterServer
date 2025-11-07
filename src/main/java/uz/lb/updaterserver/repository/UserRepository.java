@@ -14,36 +14,39 @@ import java.util.Optional;
 @Repository
 @Transactional
 public interface UserRepository extends JpaRepository<User, Long> {
+
     Optional<User> findByLogin(String login);
-    long countByCreatedByUserId(Long createdByUserId);
+
+//    long countByCreatedByUserId(Long createdByUserId);
 
     @Modifying
     @Query(value = "SELECT * FROM  account  WHERE LOWER(login) LIKE LOWER(CONCAT('%', :login, '%'))", nativeQuery = true)
     List<User> findUsersByLogin(@Param(value = "login") String login);
 
     User findUserByLogin(String login);
-//    Optional<User> findByUsernameAndVisibleTrue(String username);
-    @Modifying
-    @Query(value = "UPDATE account SET visible = false WHERE account.id= :id", nativeQuery = true)
-    User deleteUserById(@Param("id") Long id);
 
-    @Query(value = """
-       WITH RECURSIVE user_hierarchy AS (
-         SELECT id
-         FROM account
-         WHERE id = :userId
-       
-         UNION ALL
-       
-         SELECT child.id
-         FROM account child
-         INNER JOIN user_hierarchy uh ON child.created_by_user_id = uh.id
-       )
-       SELECT a.*
-       FROM account a
-       WHERE a.id IN (SELECT id FROM user_hierarchy);
-            """, nativeQuery = true)
-    List<User> getAllDescendants(@Param("userId") Long userId);
+////    Optional<User> findByUsernameAndVisibleTrue(String username);
+//    @Modifying
+//    @Query(value = "UPDATE account SET visible = false WHERE account.id= :id", nativeQuery = true)
+//    User deleteUserById(@Param("id") Long id);
+//
+//    @Query(value = """
+//       WITH RECURSIVE user_hierarchy AS (
+//         SELECT id
+//         FROM account
+//         WHERE id = :userId
+//
+//         UNION ALL
+//
+//         SELECT child.id
+//         FROM account child
+//         INNER JOIN user_hierarchy uh ON child.created_by_user_id = uh.id
+//       )
+//       SELECT a.*
+//       FROM account a
+//       WHERE a.id IN (SELECT id FROM user_hierarchy);
+//            """, nativeQuery = true)
+//    List<User> getAllDescendants(@Param("userId") Long userId);
 
 //    @Query(value = """
 //    WITH RECURSIVE user_hierarchy AS (
@@ -62,6 +65,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 //    WHERE a.id IN (SELECT id FROM user_hierarchy)
 //    """, nativeQuery = true)
 //    List<User> getAllAncestors(@Param("userId") Long userId);
-
 
 }

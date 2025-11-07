@@ -18,5 +18,4 @@ import java.time.LocalDateTime;
 public class JwtDTO {
     String login;
     String role;
-    LocalDateTime passwordChangedAt;
 }

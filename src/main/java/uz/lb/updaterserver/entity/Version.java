@@ -27,12 +27,16 @@ public class Version implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(name = "version", nullable = false, unique = true)
     String version;
 
+    @Column(name = "url",nullable = false, unique = true)
     String url;
 
+    @Column(name = "hash",nullable = false, unique = true)
     String hash;
 
+    @Column(name = "release_notes",nullable = false)
     String releaseNotes;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -46,6 +50,12 @@ public class Version implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     Attachment attachment;
+
+    @Column(name = "created_by_user_id")
+    Long createdByUserId;
+
+    @Column(name = "updated_by_user_id")
+    Long updatedByUserId;
 
     @JsonIgnore
     @CreationTimestamp

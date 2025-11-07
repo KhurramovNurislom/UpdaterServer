@@ -4,7 +4,9 @@ package uz.lb.updaterserver.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import uz.lb.updaterserver.config.CustomUserDetails;
 import uz.lb.updaterserver.dto.ResultDTO;
 import uz.lb.updaterserver.payload.UserPayload;
 import uz.lb.updaterserver.service.UserService;
@@ -19,33 +21,33 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/all")
-    public ResponseEntity<ResultDTO> getAllUser() {
-        return userService.getAllUser();
+    public ResponseEntity<ResultDTO> getAllUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
+        return userService.getAllUser(currentUser);
     }
 
-    @PostMapping("/save")
+    @PostMapping("/reg")
     public ResponseEntity<ResultDTO> saveUser(@RequestBody UserPayload userPayload) {
-        return userService.saveUser(userPayload);
+        return userService.registrationUser(userPayload);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResultDTO> getUserById(@PathVariable(value = "id") Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<ResultDTO> getUserById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") Long id) {
+        return userService.getUserById(currentUser, id);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<ResultDTO> getUserByLogin(@RequestParam(value = "login") String login) {
-        return userService.getUserByLogin(login);
+    @GetMapping("/login")
+    public ResponseEntity<ResultDTO> getUserByLogin(@AuthenticationPrincipal CustomUserDetails currentUser, @RequestParam(value = "login") String login) {
+        return userService.getUserByLogin(currentUser, login);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResultDTO> updateUserById(@PathVariable(value = "id") Long id, @RequestBody UserPayload userPayload) {
-        return userService.updateUserById(id, userPayload);
+    public ResponseEntity<ResultDTO> updateUserById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") Long id, @RequestBody UserPayload userPayload) {
+        return userService.updateUserById(currentUser, id, userPayload);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResultDTO> deleteUserById(@PathVariable(value = "id") Long id, @RequestBody UserPayload userPayload) {
-        return userService.deleteUserById(id, userPayload);
+    public ResponseEntity<ResultDTO> deleteUserById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") Long id) {
+        return userService.deleteUserById(currentUser, id);
     }
 
 }

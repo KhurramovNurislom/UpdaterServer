@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import uz.lb.updaterserver.enums.GeneralStatus;
+import uz.lb.updaterserver.enums.RoleEnum;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -38,9 +39,11 @@ public class User implements Serializable {
     @Column(nullable = false, name = "password")
     String password;
 
-//    @JsonIgnore
-//    @Column(name = "description")
-//    String description;
+    @JsonIgnore
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    RoleEnum role = RoleEnum.ROLE_USER;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
@@ -56,6 +59,13 @@ public class User implements Serializable {
     @Column(name = "visible")
     @Builder.Default
     Boolean visible = Boolean.TRUE;
+
+
+    @Column(name = "created_by_user_id")
+    Long createdByUserId;
+
+    @Column(name = "updated_by_user_id")
+    Long updatedByUserId;
 
     @JsonIgnore
     @CreationTimestamp

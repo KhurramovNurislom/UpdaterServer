@@ -26,19 +26,15 @@ public class JwtUtil {
 
     private static final int TOKEN_LIVE_TIME = 1000 * 3600 * 24;
 
-    public static String encode(String login, String role, LocalDateTime passwordChangedAt) {
+    public static String encode(String login, String role) {
 
         System.out.println("JwtUtil.encode.login -> " + login);
         System.out.println("JwtUtil.encode.role -> " + role);
-        System.out.println("JwtUtil.encode.passwordChangedAt -> " + passwordChangedAt.toString());
-        System.out.println();
+
 
         Map<String, Object> extraClaims = new HashMap<>();
 
         extraClaims.put("role", role);
-
-        LocalDateTime pwdChangedAtVal = passwordChangedAt != null ? passwordChangedAt : LocalDateTime.MIN;
-        extraClaims.put("pwdChangedAt", pwdChangedAtVal.toString());
 
         return Jwts
                 .builder()
@@ -60,9 +56,9 @@ public class JwtUtil {
 
         String login = claims.getSubject();
         String role = (String) claims.get("role");
-        String pwdChangedAtStr = (String) claims.get("pwdChangedAt");
 
-        return new JwtDTO(login, role, LocalDateTime.parse(pwdChangedAtStr));
+
+        return new JwtDTO(login, role);
     }
 
     private static SecretKey getSignInKey() {

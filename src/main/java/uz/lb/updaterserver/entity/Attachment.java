@@ -29,14 +29,6 @@ public class Attachment implements Serializable {
     @Column(nullable = false)
     String fileName;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
-    Version version;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
-    Application application;
-
     String hashId;
 
     String contentType;
@@ -48,6 +40,20 @@ public class Attachment implements Serializable {
     String link;
 
     Float fileSize;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    Version version;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    Application application;
+
+    @Column(name = "created_by_user_id")
+    Long createdByUserId;
+
+    @Column(name = "updated_by_user_id")
+    Long updatedByUserId;
 
     @JsonIgnore
     @CreationTimestamp
