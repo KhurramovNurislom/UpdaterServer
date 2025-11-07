@@ -14,13 +14,11 @@ public class ConvertEntityToDTO {
 
         UserDTO userDTO = new UserDTO();
 
-        System.out.println("user.role -> " + user.getRole());
-
         userDTO.setId(user.getId());
         userDTO.setLogin(user.getLogin());
         userDTO.setRole(user.getRole().toString());
 
-        if (user.getApplications() != null) {
+        if (!user.getApplications().isEmpty() && user.getApplications() != null) {
             userDTO.setApplications((List<ApplicationDTO>) ApplicationListToListDTO(user.getApplications()));
         }
 
@@ -50,7 +48,7 @@ public class ConvertEntityToDTO {
         applicationDTO.setName(application.getName());
         applicationDTO.setDescriptions(application.getDescriptions());
 
-        if (application.getVersions() != null)
+        if (!application.getVersions().isEmpty() && application.getVersions() != null)
             applicationDTO.setVersions((List<VersionDTO>) VersionListToListDTO(application.getVersions()));
 
         if (application.getCreatedByUserId() != null)

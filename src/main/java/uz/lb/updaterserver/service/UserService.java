@@ -42,6 +42,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public ResponseEntity<ResultDTO> authorization(AuthPayload authPayload) {
+
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authPayload.getLogin(), authPayload.getPassword()));
             if (authentication.isAuthenticated()) {
@@ -51,6 +52,8 @@ public class UserService {
                 authResponseDTO.setJwt(JwtUtil.encode(customUser.getUsername(), customUser.getRole().toString()));
                 authResponseDTO.setUser(ConvertEntityToDTO.UserToUserDTO(user));
                 authResponseDTO.setStatus(user.getStatus());
+
+                System.out.println(authResponseDTO.toString());
                 return ResponseEntity.ok(new ResultDTO().success(authResponseDTO));
             }
             return ResponseEntity.ok(new ResultDTO().error("Login and password wrong or user not active"));
