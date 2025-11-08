@@ -35,8 +35,7 @@ public class DataInitializer implements CommandLineRunner {
                     .password(passwordEncoder.encode(password))
                     .role(RoleEnum.ROLE_ADMIN)
                     .build());
-            log.info("\n\nSuper admin created: login: {}; password: {}; \n" +
-                            "To ensure security, you are required to change your password to use the application's features.\n",
+            log.info("\n\nSuper admin created: login: {}; password: {}.\n",
                     username, password);
         } else {
             log.info("User already exists -> {}", user.getLogin());
