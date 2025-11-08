@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import uz.lb.updaterserver.config.CustomUserDetails;
 import uz.lb.updaterserver.dto.AuthResponseDTO;
 import uz.lb.updaterserver.dto.ResultDTO;
-import uz.lb.updaterserver.dto.UserDTO;
 import uz.lb.updaterserver.entity.User;
 import uz.lb.updaterserver.enums.GeneralStatus;
 import uz.lb.updaterserver.enums.RoleEnum;
@@ -27,8 +26,6 @@ import uz.lb.updaterserver.repository.UserRepository;
 import uz.lb.updaterserver.utils.ConvertEntityToDTO;
 import uz.lb.updaterserver.utils.JwtUtil;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -74,6 +71,7 @@ public class UserService {
         user = userRepository.save(User.builder()
                 .login(userPayload.getLogin())
                 .password(passwordEncoder.encode(userPayload.getPassword()))
+                .role(userPayload.getRole() == null ? RoleEnum.ROLE_USER : userPayload.getRole())
                 .build());
 
         return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.UserToUserDTO(user)));
@@ -98,6 +96,14 @@ public class UserService {
         return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.UserToUserDTO(user)));
     }
 
+    public ResponseEntity<ResultDTO> getUsersByLogin(CustomUserDetails currentUser, String login) {
+        List<User> users = userRepository.findUsersByLogin(login);
+        if (users.isEmpty()) {
+            throw new AppItemNotFoundException("users does not exist");
+        }
+        return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.UserListToListDTO(users)));
+    }
+
     public ResponseEntity<ResultDTO> getUserById(CustomUserDetails currentUser, Long id) {
         return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.UserToUserDTO(findUserById(id))));
     }
@@ -113,6 +119,7 @@ public class UserService {
             }
             user.setLogin(userPayload.getLogin());
             user.setPassword(passwordEncoder.encode(userPayload.getPassword()));
+            user.setRole(userPayload.getRole() == null ? RoleEnum.ROLE_USER : userPayload.getRole());
             user.setVisible(userPayload.getVisible() == null ? Boolean.TRUE : userPayload.getVisible());
             user.setStatus(userPayload.getStatus() == null ? GeneralStatus.ACTIVE : userPayload.getStatus());
             user.setUpdatedByUserId(currentUser.getId());
@@ -133,6 +140,7 @@ public class UserService {
         throw new AppForbiddenException("Forbidden...");
     }
 
+    /*********************************************************************************************************************/
     private User findUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> {
             throw new AppItemNotFoundException("user not found with this id = " + userId);

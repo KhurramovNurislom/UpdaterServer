@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import uz.lb.updaterserver.enums.GeneralStatus;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -32,17 +33,24 @@ public class Application implements Serializable {
 
     String descriptions;
 
-//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JsonManagedReference
-//    User user;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    User user;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     List<Version> versions;
 
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-//    @JsonManagedReference
-//    List<Attachment> attachments;
+    @JsonIgnore
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    GeneralStatus status = GeneralStatus.ACTIVE;
+
+    @JsonIgnore
+    @Column(name = "visible")
+    @Builder.Default
+    Boolean visible = Boolean.TRUE;
 
     @Column(name = "created_by_user_id")
     Long createdByUserId;

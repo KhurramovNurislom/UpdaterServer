@@ -33,8 +33,10 @@ public class ApplicationService {
     private final UserRepository userRepository;
     private final VersionRepository versionRepository;
 
-
+    @Transactional
     public ResponseEntity<ResultDTO> saveApplication(CustomUserDetails currentUser, ApplicationPayload applicationPayload) {
+
+        User user = findUserById(currentUser.getId());
 
         Application application = applicationRepository.findApplicationByName(applicationPayload.getName());
 
@@ -44,24 +46,49 @@ public class ApplicationService {
 
         application = applicationRepository.save(Application.builder()
                 .name(applicationPayload.getName())
-                .descriptions(application.getDescriptions() == null ? "" : applicationPayload.getDescriptions())
+                .descriptions(applicationPayload.getDescriptions())
                 .createdByUserId(currentUser.getId())
+                .user(user)
                 .build());
 
-        return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.ApplicationToApplicationDTO(application)));
+        List<Application> applicationList = new ArrayList<>();
+        applicationList.addAll(user.getApplications());
+        applicationList.add(application);
+
+        user.setApplications(applicationList);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.ApplicationToApplicationWithUserDTO(application)));
     }
 
     public ResponseEntity<ResultDTO> getAllApplication(CustomUserDetails currentUser) {
         List<Application> applications = applicationRepository.findAll();
         if (applications.isEmpty()) {
-            throw new AppItemNotFoundException("user does not exist");
+            throw new AppItemNotFoundException("applications does not exists");
         }
-        return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.ApplicationListToListDTO(applications)));
+        return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.ApplicationWithUserListToListDTO(applications)));
     }
 
     public ResponseEntity<ResultDTO> getApplicationById(CustomUserDetails currentUser, Long id) {
         return ResponseEntity.ok(new ResultDTO().success(
-                ConvertEntityToDTO.ApplicationToApplicationDTO(findApplicationById(id))));
+                ConvertEntityToDTO.ApplicationToApplicationWithUserDTO(findApplicationById(id))));
+    }
+
+    public ResponseEntity<ResultDTO> getApplicationByName(CustomUserDetails currentUser, String name) {
+
+        Application application = applicationRepository.findApplicationByName(name);
+        if (application == null) {
+            throw new AppItemNotFoundException("application with this name = " + name + " was not found");
+        }
+        return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.ApplicationToApplicationWithUserDTO(application)));
+    }
+
+    public ResponseEntity<ResultDTO> getApplicationsByName(CustomUserDetails currentUser, String name) {
+        List<Application> applications = applicationRepository.findApplicationsByName(name);
+        if (applications.isEmpty()) {
+            throw new AppItemNotFoundException("applications does not exists");
+        }
+        return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.ApplicationWithUserListToListDTO(applications)));
     }
 
     @Transactional
@@ -79,11 +106,12 @@ public class ApplicationService {
             application.setName(applicationPayload.getName());
             application.setDescriptions(applicationPayload.getDescriptions());
 
-            if (!applicationPayload.getVersionIds().isEmpty())
+            if (applicationPayload.getVersionIds() != null && !applicationPayload.getVersionIds().isEmpty())
                 application.setVersions(findVersions(applicationPayload.getVersionIds()));
 
             application.setUpdatedByUserId(currentUser.getId());
             application = applicationRepository.save(application);
+
             return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.ApplicationToApplicationDTO(application)));
         }
 
@@ -101,7 +129,7 @@ public class ApplicationService {
         throw new AppForbiddenException("Forbidden...");
     }
 
-
+    /*********************************************************************************************************************/
     private List<Version> findVersions(List<Long> ids) {
         List<Version> versions = new ArrayList<>();
         for (Long i : ids) {

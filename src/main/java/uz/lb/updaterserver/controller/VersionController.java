@@ -4,9 +4,13 @@ package uz.lb.updaterserver.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import uz.lb.updaterserver.config.CustomUserDetails;
 import uz.lb.updaterserver.dto.ResultDTO;
+import uz.lb.updaterserver.payload.ApplicationPayload;
 import uz.lb.updaterserver.payload.VersionPayload;
+import uz.lb.updaterserver.service.ApplicationService;
 import uz.lb.updaterserver.service.VersionService;
 
 @Slf4j
@@ -31,6 +35,16 @@ public class VersionController {
     @GetMapping("/{id}")
     public ResponseEntity<ResultDTO> getVersionById(@PathVariable(value = "id") Long id) {
         return versionService.getVersionById(id);
+    }
+
+    @GetMapping("/version")
+    public ResponseEntity<ResultDTO> getApplicationByName(@AuthenticationPrincipal CustomUserDetails currentUser, @RequestParam(value = "version") String version) {
+        return versionService.getVersionByVersion(currentUser, version);
+    }
+
+    @GetMapping("/versions-by-version")
+    public ResponseEntity<ResultDTO> getApplicationsByName(@AuthenticationPrincipal CustomUserDetails currentUser, @RequestParam(value = "version") String version) {
+        return versionService.getVersionsByVersion(currentUser, version);
     }
 
     @PutMapping("/{id}")

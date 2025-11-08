@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.web.ProjectedPayload;
 import uz.lb.updaterserver.annotation.StrongPassword;
 import uz.lb.updaterserver.enums.GeneralStatus;
+import uz.lb.updaterserver.enums.RoleEnum;
 
 @Data
 @ProjectedPayload
@@ -23,6 +24,8 @@ public class UserPayload {
     @NotBlank(message = "Password must not be empty.")
     @StrongPassword(message = "Password must not contain spaces.")
     String password;
+
+    RoleEnum role;
 
     GeneralStatus status;
 

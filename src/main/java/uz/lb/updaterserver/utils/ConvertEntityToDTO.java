@@ -4,8 +4,6 @@ import uz.lb.updaterserver.dto.*;
 import uz.lb.updaterserver.entity.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class ConvertEntityToDTO {
@@ -18,9 +16,11 @@ public class ConvertEntityToDTO {
         userDTO.setLogin(user.getLogin());
         userDTO.setRole(user.getRole().toString());
 
-        if (!user.getApplications().isEmpty() && user.getApplications() != null) {
-            userDTO.setApplications((List<ApplicationDTO>) ApplicationListToListDTO(user.getApplications()));
+        if (user.getApplications() != null && !user.getApplications().isEmpty()) {
+            ListDataDTO listData = ApplicationListToListDTO(user.getApplications());
+            userDTO.setApplications((List<ApplicationDTO>) listData.getData());
         }
+
 
         if (user.getCreatedByUserId() != null)
             userDTO.setCreatedUserId(user.getCreatedByUserId());
@@ -48,8 +48,10 @@ public class ConvertEntityToDTO {
         applicationDTO.setName(application.getName());
         applicationDTO.setDescriptions(application.getDescriptions());
 
-        if (!application.getVersions().isEmpty() && application.getVersions() != null)
-            applicationDTO.setVersions((List<VersionDTO>) VersionListToListDTO(application.getVersions()));
+        if (application.getVersions() != null && !application.getVersions().isEmpty()) {
+            ListDataDTO listData = VersionListToListDTO(application.getVersions());
+            applicationDTO.setVersions((List<VersionDTO>) listData.getData());
+        }
 
         if (application.getCreatedByUserId() != null)
             applicationDTO.setCreatedUserId(application.getCreatedByUserId());
@@ -61,18 +63,34 @@ public class ConvertEntityToDTO {
     }
 
 
+    public static ApplicationDTO ApplicationToApplicationWithUserDTO(Application application) {
+        ApplicationDTO applicationDTO = ApplicationToApplicationDTO(application);
+        applicationDTO.setUserDTO(UserToUserDTO(application.getUser()));
+        return applicationDTO;
+    }
+
     public static ListDataDTO ApplicationListToListDTO(List<Application> applications) {
         List<ApplicationDTO> resultList = new ArrayList<>();
         for (Application application : applications) {
             resultList.add(ApplicationToApplicationDTO(application));
         }
+        return getListDataDTO(resultList);
+    }
 
+    public static ListDataDTO ApplicationWithUserListToListDTO(List<Application> applications) {
+        List<ApplicationDTO> resultList = new ArrayList<>();
+        for (Application application : applications) {
+            resultList.add(ApplicationToApplicationWithUserDTO(application));
+        }
+        return getListDataDTO(resultList);
+    }
+
+    private static ListDataDTO getListDataDTO(List<ApplicationDTO> resultList) {
         ListDataDTO listDataDTO = new ListDataDTO();
         listDataDTO.setData(resultList);
         listDataDTO.setSize(resultList.size());
         return listDataDTO;
     }
-
 
     public static VersionDTO VersionToVersionDTO(Version version) {
 

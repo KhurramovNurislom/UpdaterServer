@@ -1,6 +1,8 @@
 package uz.lb.updaterserver.payload;
 
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +16,11 @@ import org.springframework.data.web.ProjectedPayload;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VersionPayload {
-    String name;
+
+    @NotBlank(message = "applicationId must not be empty.")
+    Long applicationId;
+
+    @NotBlank(message = "Version must not be empty.")
+    String version;
 
 }

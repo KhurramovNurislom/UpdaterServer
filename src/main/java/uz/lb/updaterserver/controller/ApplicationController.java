@@ -36,6 +36,16 @@ public class ApplicationController {
         return applicationService.getApplicationById(currentUser, id);
     }
 
+    @GetMapping("/name")
+    public ResponseEntity<ResultDTO> getApplicationByName(@AuthenticationPrincipal CustomUserDetails currentUser, @RequestParam(value = "name") String name) {
+        return applicationService.getApplicationByName(currentUser, name);
+    }
+
+    @GetMapping("/applications-by-name")
+    public ResponseEntity<ResultDTO> getApplicationsByName(@AuthenticationPrincipal CustomUserDetails currentUser, @RequestParam(value = "name") String name) {
+        return applicationService.getApplicationsByName(currentUser, name);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ResultDTO> updateApplicationById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") Long id, @RequestBody ApplicationPayload applicationPayload) {
         return applicationService.updateApplicationById(currentUser, id, applicationPayload);

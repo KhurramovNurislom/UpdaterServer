@@ -39,7 +39,6 @@ public class AttachmentService {
     @Value("${upload.folder}")
     private String uploadFolder;
 
-
     public ResponseEntity<ResultDTO> getAllAttachment() {
         List<Attachment> attachments = attachmentRepository.findAll(Sort.by("createdAt"));
         if (attachments.isEmpty()) {

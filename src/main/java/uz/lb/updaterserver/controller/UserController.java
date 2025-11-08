@@ -39,6 +39,10 @@ public class UserController {
     public ResponseEntity<ResultDTO> getUserByLogin(@AuthenticationPrincipal CustomUserDetails currentUser, @RequestParam(value = "login") String login) {
         return userService.getUserByLogin(currentUser, login);
     }
+   @GetMapping("/users-by-login")
+    public ResponseEntity<ResultDTO> getUsersByLogin(@AuthenticationPrincipal CustomUserDetails currentUser, @RequestParam(value = "login") String login) {
+        return userService.getUsersByLogin(currentUser, login);
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResultDTO> updateUserById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") Long id, @RequestBody UserPayload userPayload) {

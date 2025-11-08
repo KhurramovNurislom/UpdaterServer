@@ -19,6 +19,7 @@ public class ApplicationDTO {
     String name;
     String descriptions;
     List<VersionDTO> versions;
+    UserDTO userDTO;
     Long createdUserId;
     Long updatedUserId;
 }
