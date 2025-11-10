@@ -17,17 +17,13 @@ public class VersionDTO {
     Long id;
 
     String version;
-
     String url;
-
     String hash;
-
     String releaseNotes;
 
     Long userId;
     Long applicationId;
-
-    String attachmentHashID;
+    AttachmentDTO attachmentDTO;
 
     Long createdUserId;
     Long updatedUserId;

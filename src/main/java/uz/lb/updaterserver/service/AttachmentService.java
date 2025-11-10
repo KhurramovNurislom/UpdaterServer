@@ -1,6 +1,5 @@
 package uz.lb.updaterserver.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,14 +11,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import uz.lb.updaterserver.config.CustomUserDetails;
 import uz.lb.updaterserver.dto.ResultDTO;
 import uz.lb.updaterserver.entity.Attachment;
 import uz.lb.updaterserver.entity.User;
 import uz.lb.updaterserver.exception.AppItemNotFoundException;
-import uz.lb.updaterserver.exception.AppPermissionDeniedException;
 import uz.lb.updaterserver.repository.AttachmentRepository;
 import uz.lb.updaterserver.repository.UserRepository;
-import uz.lb.updaterserver.utils.ConvertEntityToDTO;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +37,7 @@ public class AttachmentService {
     @Value("${upload.folder}")
     private String uploadFolder;
 
-    public ResponseEntity<ResultDTO> getAllAttachment() {
+    public ResponseEntity<ResultDTO> getAllAttachment(CustomUserDetails currentUser) {
         List<Attachment> attachments = attachmentRepository.findAll(Sort.by("createdAt"));
         if (attachments.isEmpty()) {
             log.error("AttachmentService.getAllAttachment => {}", "attachments does not exist");
@@ -50,7 +48,10 @@ public class AttachmentService {
     }
 
 
-    public ResponseEntity<ResultDTO> saveAttachment(MultipartFile multipartFile) {
+    public ResponseEntity<ResultDTO> saveAttachment(CustomUserDetails currentUser, MultipartFile multipartFile) {
+
+
+        User user = findUserById(currentUser.getId());
 
         Attachment attachment = new Attachment();
 
@@ -69,6 +70,8 @@ public class AttachmentService {
 
         attachment.setUploadPath(uploadPath);
         attachment.setLink(String.format("%s/%s.%s", file.getAbsolutePath(), attachment.getHashId(), attachment.getExtension()));
+        attachment.setUser(user);
+        attachment.setCreatedByUserId(currentUser.getId());
         try {
             multipartFile.transferTo(new File(attachment.getLink()));
         } catch (IOException e) {
@@ -83,7 +86,7 @@ public class AttachmentService {
     }
 
 
-    public ResponseEntity<FileUrlResource> preview(String hashId) {
+    public ResponseEntity<FileUrlResource> preview(CustomUserDetails currentUser, String hashId) {
         ResultDTO result = findAttachmentByHashId(hashId);
         if (result.isStatus()) {
             Attachment attachment = (Attachment) result.getData();
@@ -101,7 +104,7 @@ public class AttachmentService {
         }
     }
 
-    public ResponseEntity<FileUrlResource> download(String hashId) {
+    public ResponseEntity<FileUrlResource> download(CustomUserDetails currentUser, String hashId) {
         ResultDTO result = findAttachmentByHashId(hashId);
         if (result.isStatus()) {
             Attachment attachment = (Attachment) result.getData();
@@ -119,19 +122,8 @@ public class AttachmentService {
         }
     }
 
-    private String getExtension(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(".") + 1);
-    }
 
-    public ResultDTO findAttachmentByHashId(String hashId) {
-        Attachment attachment = attachmentRepository.findByHashId(hashId);
-
-        ResultDTO resultDTO = new ResultDTO();
-        if (attachment == null) return resultDTO.error("hashId not found");
-        else return resultDTO.success(attachment);
-    }
-
-    public ResponseEntity<ResultDTO> removeAttachmentByHashId(String hashId) {
+    public ResponseEntity<ResultDTO> removeAttachmentByHashId(CustomUserDetails currentUser, String hashId) {
 
         /** bu yerda role admin bo'lmasa delete emas visible false qilish zarur */
 
@@ -145,5 +137,24 @@ public class AttachmentService {
             log.error("AttachmentService.removeAttachmentByHashId => {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResultDTO().error(e));
         }
+    }
+
+    /***************************************************************************************************************/
+    private String getExtension(String fileName) {
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
+
+    public ResultDTO findAttachmentByHashId(String hashId) {
+        Attachment attachment = attachmentRepository.findByHashId(hashId);
+
+        ResultDTO resultDTO = new ResultDTO();
+        if (attachment == null) return resultDTO.error("hashId not found");
+        else return resultDTO.success(attachment);
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> {
+            throw new AppItemNotFoundException("user not found with this id = " + userId);
+        });
     }
 }

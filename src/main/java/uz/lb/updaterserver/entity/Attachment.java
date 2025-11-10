@@ -41,13 +41,18 @@ public class Attachment implements Serializable {
 
     Float fileSize;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
-    Version version;
+    User user;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     Application application;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    Version version;
+
 
     @Column(name = "created_by_user_id")
     Long createdByUserId;

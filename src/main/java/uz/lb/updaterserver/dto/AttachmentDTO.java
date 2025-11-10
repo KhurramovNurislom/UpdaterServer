@@ -23,8 +23,9 @@ public class AttachmentDTO {
     String link;
     Float fileSize;
 
-    Long versionId;
+    Long userId;
     Long applicationId;
+    Long versionId;
 
     Long createdUserId;
     Long updatedUserId;

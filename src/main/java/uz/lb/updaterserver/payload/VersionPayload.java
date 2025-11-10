@@ -17,10 +17,16 @@ import org.springframework.data.web.ProjectedPayload;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VersionPayload {
 
+    @NotBlank(message = "version must not be empty.")
+    String version;
+
     @NotBlank(message = "applicationId must not be empty.")
     Long applicationId;
 
-    @NotBlank(message = "Version must not be empty.")
-    String version;
+    @NotBlank(message = "releaseNotes must not be empty.")
+    String releaseNotes;
+
+    @NotBlank(message = "attachmentHashId must not be empty.")
+    String attachmentHashId;
 
 }

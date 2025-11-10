@@ -72,6 +72,7 @@ public class ConvertEntityToDTO {
     public static ListDataDTO ApplicationListToListDTO(List<Application> applications) {
         List<ApplicationDTO> resultList = new ArrayList<>();
         for (Application application : applications) {
+
             resultList.add(ApplicationToApplicationDTO(application));
         }
         return getListDataDTO(resultList);
@@ -96,6 +97,7 @@ public class ConvertEntityToDTO {
 
         VersionDTO versionDTO = new VersionDTO();
 
+        versionDTO.setId(version.getId());
         versionDTO.setVersion(version.getVersion());
         versionDTO.setUrl(versionDTO.getUrl());
         versionDTO.setHash(versionDTO.getHash());
@@ -103,7 +105,9 @@ public class ConvertEntityToDTO {
 
         versionDTO.setUserId(version.getUser().getId());
         versionDTO.setApplicationId(version.getApplication().getId());
-        versionDTO.setAttachmentHashID(version.getAttachment().getHashId());
+
+        if (version.getAttachment() != null)
+            versionDTO.setAttachmentDTO(AttachmentToAttachmentDTO(version.getAttachment()));
 
         if (version.getCreatedByUserId() != null)
             versionDTO.setCreatedUserId(version.getCreatedByUserId());
@@ -117,9 +121,12 @@ public class ConvertEntityToDTO {
 
     public static ListDataDTO VersionListToListDTO(List<Version> versions) {
         List<VersionDTO> resultList = new ArrayList<>();
+
         for (Version version : versions) {
             resultList.add(VersionToVersionDTO(version));
         }
+
+
         ListDataDTO listDataDTO = new ListDataDTO();
         listDataDTO.setData(resultList);
         listDataDTO.setSize(resultList.size());
@@ -139,12 +146,14 @@ public class ConvertEntityToDTO {
         attachmentDTO.setLink(attachment.getLink());
         attachmentDTO.setFileSize(attachment.getFileSize());
 
-
-        if (attachment.getVersion() != null)
-            attachmentDTO.setVersionId(attachment.getVersion().getId());
+        if (attachment.getUser() != null)
+            attachmentDTO.setUserId(attachment.getUser().getId());
 
         if (attachment.getApplication() != null)
             attachmentDTO.setApplicationId(attachment.getApplication().getId());
+
+        if (attachment.getVersion() != null)
+            attachmentDTO.setVersionId(attachment.getVersion().getId());
 
         if (attachment.getCreatedByUserId() != null)
             attachmentDTO.setCreatedUserId(attachment.getCreatedByUserId());
