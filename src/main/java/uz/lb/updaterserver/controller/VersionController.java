@@ -31,9 +31,9 @@ public class VersionController {
         return versionService.saveVersion(currentUser,versionPayload);
     }
 
-    @GetMapping("/all-by-application-id")
+    @GetMapping("/versions-by-application-id/{applicationId}")
     public ResponseEntity<ResultDTO> getAllVersionsByApplicationId(@AuthenticationPrincipal CustomUserDetails currentUser,
-                                                                   @RequestParam("applicationId") Long applicationId) {
+                                                                   @PathVariable("applicationId") Long applicationId) {
         return versionService.getAllVersionsByApplicationId(currentUser, applicationId);
     }
 

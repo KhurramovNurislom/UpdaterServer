@@ -58,7 +58,11 @@ public class SecurityConfig {
             "/updater-server/auth",
 
             //registration
-            "/user/reg"
+            "/user/reg",
+
+            //files
+            "/file/preview/**",
+            "/file/download/**",
 
     };
 

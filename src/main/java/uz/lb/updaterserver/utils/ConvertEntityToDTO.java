@@ -99,8 +99,8 @@ public class ConvertEntityToDTO {
 
         versionDTO.setId(version.getId());
         versionDTO.setVersion(version.getVersion());
-        versionDTO.setUrl(versionDTO.getUrl());
-        versionDTO.setHash(versionDTO.getHash());
+        versionDTO.setUrl(version.getUrl());
+        versionDTO.setHash(version.getHash());
         versionDTO.setReleaseNotes(version.getReleaseNotes());
 
         versionDTO.setUserId(version.getUser().getId());
@@ -125,7 +125,6 @@ public class ConvertEntityToDTO {
         for (Version version : versions) {
             resultList.add(VersionToVersionDTO(version));
         }
-
 
         ListDataDTO listDataDTO = new ListDataDTO();
         listDataDTO.setData(resultList);
@@ -164,5 +163,15 @@ public class ConvertEntityToDTO {
         return attachmentDTO;
     }
 
+    public static ListDataDTO AttachmentListToAttachmentDTOList(List<Attachment> attachments) {
+        List<AttachmentDTO> resultList = new ArrayList<>();
+        for (Attachment attachment : attachments) {
+            resultList.add(AttachmentToAttachmentDTO(attachment));
+        }
+        ListDataDTO listDataDTO = new ListDataDTO();
+        listDataDTO.setData(resultList);
+        listDataDTO.setSize(resultList.size());
+        return listDataDTO;
+    }
 
 }

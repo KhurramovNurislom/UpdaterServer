@@ -16,6 +16,7 @@ import java.util.List;
 public interface VersionRepository extends JpaRepository<Version, Long> {
 
     Version findVersionByVersion(String version);
+    Version findVersionById(Long id);
 
     @Query("""
                 SELECT v

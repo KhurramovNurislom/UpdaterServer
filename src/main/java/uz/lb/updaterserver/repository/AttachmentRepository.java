@@ -6,5 +6,5 @@ import uz.lb.updaterserver.entity.Attachment;
 
 @Repository
 public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
-    Attachment findByHashId(String hashId);
+    Attachment findAttachmentByHashId(String hashId);
 }

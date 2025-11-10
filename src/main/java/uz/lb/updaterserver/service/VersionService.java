@@ -1,6 +1,7 @@
 package uz.lb.updaterserver.service;
 
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -11,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import uz.lb.updaterserver.config.CustomUserDetails;
 import uz.lb.updaterserver.dto.ListDataDTO;
 import uz.lb.updaterserver.dto.ResultDTO;
-import uz.lb.updaterserver.dto.VersionDTO;
 import uz.lb.updaterserver.entity.Application;
 import uz.lb.updaterserver.entity.Attachment;
 import uz.lb.updaterserver.entity.User;
@@ -48,7 +48,7 @@ public class VersionService {
     private final ApplicationRepository applicationRepository;
     private final AttachmentRepository attachmentRepository;
 
-
+    @Transactional
     public ResponseEntity<ResultDTO> saveVersion(CustomUserDetails currentUser, VersionPayload versionPayload) {
 
         Version version = versionRepository.findVersionByVersion(versionPayload.getVersion());
@@ -67,9 +67,9 @@ public class VersionService {
             throw new AppForbiddenException("You do not have permission to modify this application. applicationId = " + versionPayload.getApplicationId());
         }
 
-        Attachment attachment = attachmentRepository.findByHashId(versionPayload.getAttachmentHashId());
+        Attachment attachment = attachmentRepository.findAttachmentByHashId(versionPayload.getAttachmentHashId());
 
-        if (attachment != null) {
+        if (attachment == null) {
             throw new AppItemNotFoundException("attachment not found with this hashId = " + versionPayload.getAttachmentHashId());
         }
 
@@ -96,6 +96,8 @@ public class VersionService {
         return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.VersionToVersionDTO(version)));
     }
 
+
+    @Transactional
     public ResponseEntity<ResultDTO> getAllVersionsByApplicationId(CustomUserDetails currentUser, Long applicationId) {
         List<Version> versions = versionRepository.getVersionByApplicationId(applicationId);
         if (versions == null) {
@@ -107,23 +109,33 @@ public class VersionService {
     }
 
     public ResponseEntity<ResultDTO> getVersionById(CustomUserDetails currentUser, Long id) {
-
-        return null;
+        Version version = versionRepository.findVersionById(id);
+        if (version == null) {
+            throw new AppItemNotFoundException("Version not found this id = " + id);
+        }
+        return ResponseEntity.ok(ResultDTO.success(ConvertEntityToDTO.VersionToVersionDTO(version)));
     }
 
     public ResponseEntity<ResultDTO> getVersionByVersion(CustomUserDetails currentUser, String version) {
-        return null;
+        Version versionEntity = versionRepository.findVersionByVersion(version);
+        if (versionEntity == null) {
+            throw new AppItemNotFoundException("Version not found this version = " + version);
+        }
+        return ResponseEntity.ok(ResultDTO.success(ConvertEntityToDTO.VersionToVersionDTO(versionEntity)));
     }
 
     public ResponseEntity<ResultDTO> getVersionsByApplicationName(CustomUserDetails currentUser, String name) {
         return null;
     }
 
+
+    @Transactional
     public ResponseEntity<ResultDTO> updateVersionById(CustomUserDetails currentUser, Long id, VersionPayload versionPayload, MultipartFile multipartFile) {
 
         return null;
     }
 
+    @Transactional
     public ResponseEntity<ResultDTO> deleteVersionById(CustomUserDetails id, Long versionPayload) {
 
         return null;

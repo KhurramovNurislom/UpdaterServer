@@ -28,7 +28,7 @@ public class Version implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "version", nullable = false, unique = true)
+    @Column(name = "version", nullable = false)
     String version;
 
     @Column(name = "url",nullable = false, unique = true)

@@ -1,28 +1,29 @@
 package uz.lb.updaterserver.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileUrlResource;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uz.lb.updaterserver.config.CustomUserDetails;
 import uz.lb.updaterserver.dto.ResultDTO;
 import uz.lb.updaterserver.entity.Attachment;
 import uz.lb.updaterserver.entity.User;
+import uz.lb.updaterserver.exception.AppForbiddenException;
 import uz.lb.updaterserver.exception.AppItemNotFoundException;
 import uz.lb.updaterserver.repository.AttachmentRepository;
 import uz.lb.updaterserver.repository.UserRepository;
+import uz.lb.updaterserver.utils.ConvertEntityToDTO;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -44,12 +45,12 @@ public class AttachmentService {
             throw new AppItemNotFoundException("attachment does not exist");
         }
         ResultDTO resultDTO = new ResultDTO();
-        return ResponseEntity.ok(resultDTO.success(attachments));
+        return ResponseEntity.ok(resultDTO.success(ConvertEntityToDTO.AttachmentListToAttachmentDTOList(attachments)));
     }
 
 
+    @Transactional
     public ResponseEntity<ResultDTO> saveAttachment(CustomUserDetails currentUser, MultipartFile multipartFile) {
-
 
         User user = findUserById(currentUser.getId());
 
@@ -82,7 +83,7 @@ public class AttachmentService {
 
         ResultDTO resultDTO = new ResultDTO();
 
-        return ResponseEntity.ok(resultDTO.success(attachment));
+        return ResponseEntity.ok(resultDTO.success(ConvertEntityToDTO.AttachmentToAttachmentDTO(attachment)));
     }
 
 
@@ -92,16 +93,20 @@ public class AttachmentService {
             Attachment attachment = (Attachment) result.getData();
             try {
                 return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "inline; fileName="
-                        + URLEncoder.encode(attachment.getFileName())).contentType(MediaType.parseMediaType(attachment.getContentType())).body(new FileUrlResource(attachment.getLink()));
+                                + URLEncoder.encode(attachment.getFileName()))
+                        .contentType(
+                                MediaType.parseMediaType(attachment.getContentType()))
+                        .body(new FileUrlResource(attachment.getLink()));
 
             } catch (MalformedURLException e) {
                 log.error("AttachmentService.preview.MalformedURLException => {}", e.getMessage());
-                throw new RuntimeException(e.getMessage());
+//                throw new RuntimeException(e.getMessage());
             }
         } else {
             log.error("AttachmentService.preview => {}", result.getMessage());
-            throw new RuntimeException(result.getMessage());
+//            throw new RuntimeException(result.getMessage());
         }
+        return null;
     }
 
     public ResponseEntity<FileUrlResource> download(CustomUserDetails currentUser, String hashId) {
@@ -128,7 +133,7 @@ public class AttachmentService {
         /** bu yerda role admin bo'lmasa delete emas visible false qilish zarur */
 
         try {
-            Attachment attachment = attachmentRepository.findByHashId(hashId);
+            Attachment attachment = attachmentRepository.findAttachmentByHashId(hashId);
 
             new File(attachment.getLink()).delete();
             ResultDTO resultDTO = new ResultDTO();
@@ -145,7 +150,7 @@ public class AttachmentService {
     }
 
     public ResultDTO findAttachmentByHashId(String hashId) {
-        Attachment attachment = attachmentRepository.findByHashId(hashId);
+        Attachment attachment = attachmentRepository.findAttachmentByHashId(hashId);
 
         ResultDTO resultDTO = new ResultDTO();
         if (attachment == null) return resultDTO.error("hashId not found");
