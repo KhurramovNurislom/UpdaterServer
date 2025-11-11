@@ -21,7 +21,6 @@ public class ConvertEntityToDTO {
             userDTO.setApplications((List<ApplicationDTO>) listData.getData());
         }
 
-
         if (user.getCreatedByUserId() != null)
             userDTO.setCreatedUserId(user.getCreatedByUserId());
 
@@ -36,29 +35,22 @@ public class ConvertEntityToDTO {
         for (User user : users) {
             resultList.add(UserToUserDTO(user));
         }
-
-        return new ListDataDTO(resultList, resultList.size());
+        return new ListDataDTO(resultList ,resultList.size());
     }
 
     public static ApplicationDTO ApplicationToApplicationDTO(Application application) {
-
         ApplicationDTO applicationDTO = new ApplicationDTO();
-
         applicationDTO.setId(application.getId());
         applicationDTO.setName(application.getName());
         applicationDTO.setDescriptions(application.getDescriptions());
-
         if (application.getVersions() != null && !application.getVersions().isEmpty()) {
             ListDataDTO listData = VersionListToListDTO(application.getVersions());
             applicationDTO.setVersions((List<VersionDTO>) listData.getData());
         }
-
         if (application.getCreatedByUserId() != null)
             applicationDTO.setCreatedUserId(application.getCreatedByUserId());
-
         if (application.getUpdatedByUserId() != null)
             applicationDTO.setUpdatedUserId(application.getUpdatedByUserId());
-
         return applicationDTO;
     }
 
@@ -72,10 +64,9 @@ public class ConvertEntityToDTO {
     public static ListDataDTO ApplicationListToListDTO(List<Application> applications) {
         List<ApplicationDTO> resultList = new ArrayList<>();
         for (Application application : applications) {
-
             resultList.add(ApplicationToApplicationDTO(application));
         }
-        return getListDataDTO(resultList);
+        return new ListDataDTO(resultList ,resultList.size());
     }
 
     public static ListDataDTO ApplicationWithUserListToListDTO(List<Application> applications) {
@@ -83,27 +74,17 @@ public class ConvertEntityToDTO {
         for (Application application : applications) {
             resultList.add(ApplicationToApplicationWithUserDTO(application));
         }
-        return getListDataDTO(resultList);
+        return new ListDataDTO(resultList ,resultList.size());
     }
 
-    private static ListDataDTO getListDataDTO(List<ApplicationDTO> resultList) {
-        ListDataDTO listDataDTO = new ListDataDTO();
-        listDataDTO.setData(resultList);
-        listDataDTO.setSize(resultList.size());
-        return listDataDTO;
-    }
 
     public static VersionDTO VersionToVersionDTO(Version version) {
-
         VersionDTO versionDTO = new VersionDTO();
-
         versionDTO.setId(version.getId());
         versionDTO.setVersion(version.getVersion());
         versionDTO.setUrl(version.getUrl());
         versionDTO.setHash(version.getHash());
         versionDTO.setReleaseNotes(version.getReleaseNotes());
-
-        versionDTO.setUserId(version.getUser().getId());
         versionDTO.setApplicationId(version.getApplication().getId());
 
         if (version.getAttachment() != null)
@@ -118,18 +99,26 @@ public class ConvertEntityToDTO {
         return versionDTO;
     }
 
+    public static VersionDTO VersionWithUserToVersionDTO(Version version) {
+        VersionDTO versionDTO = VersionToVersionDTO(version);
+        versionDTO.setUserDTO(UserToUserDTO(version.getUser()));
+        return versionDTO;
+    }
+
+    public static ListDataDTO VersionListWithUserToListDTO(List<Version> versions) {
+        List<VersionDTO> resultList = new ArrayList<>();
+        for (Version version : versions) {
+            resultList.add(VersionWithUserToVersionDTO(version));
+        }
+        return new ListDataDTO(resultList ,resultList.size());
+    }
 
     public static ListDataDTO VersionListToListDTO(List<Version> versions) {
         List<VersionDTO> resultList = new ArrayList<>();
-
         for (Version version : versions) {
             resultList.add(VersionToVersionDTO(version));
         }
-
-        ListDataDTO listDataDTO = new ListDataDTO();
-        listDataDTO.setData(resultList);
-        listDataDTO.setSize(resultList.size());
-        return listDataDTO;
+        return new ListDataDTO(resultList ,resultList.size());
     }
 
     public static AttachmentDTO AttachmentToAttachmentDTO(Attachment attachment) {
@@ -142,7 +131,7 @@ public class ConvertEntityToDTO {
         attachmentDTO.setHashId(attachment.getHashId());
         attachmentDTO.setContentType(attachment.getContentType());
         attachmentDTO.setExtension(attachment.getExtension());
-        attachmentDTO.setLink(attachment.getLink());
+//        attachmentDTO.setLink(attachment.getLink());
         attachmentDTO.setFileSize(attachment.getFileSize());
 
         if (attachment.getUser() != null)
@@ -168,10 +157,6 @@ public class ConvertEntityToDTO {
         for (Attachment attachment : attachments) {
             resultList.add(AttachmentToAttachmentDTO(attachment));
         }
-        ListDataDTO listDataDTO = new ListDataDTO();
-        listDataDTO.setData(resultList);
-        listDataDTO.setSize(resultList.size());
-        return listDataDTO;
+        return new ListDataDTO(resultList ,resultList.size());
     }
-
 }

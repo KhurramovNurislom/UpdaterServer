@@ -21,7 +21,7 @@ public class VersionDTO {
     String hash;
     String releaseNotes;
 
-    Long userId;
+    UserDTO userDTO;
     Long applicationId;
     AttachmentDTO attachmentDTO;
 

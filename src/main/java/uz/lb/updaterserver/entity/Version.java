@@ -31,13 +31,13 @@ public class Version implements Serializable {
     @Column(name = "version", nullable = false)
     String version;
 
-    @Column(name = "url",nullable = false, unique = true)
+    @Column(name = "url", nullable = false, unique = true)
     String url;
 
-    @Column(name = "hash",nullable = false, unique = true)
+    @Column(name = "hash", nullable = false, unique = true)
     String hash;
 
-    @Column(name = "release_notes",nullable = false)
+    @Column(name = "release_notes", nullable = false)
     String releaseNotes;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

@@ -15,7 +15,7 @@ import java.util.List;
 @Transactional
 public interface VersionRepository extends JpaRepository<Version, Long> {
 
-    Version findVersionByVersion(String version);
+    List<Version> findAllByVersion(String version);
     Version findVersionById(Long id);
 
     @Query("""

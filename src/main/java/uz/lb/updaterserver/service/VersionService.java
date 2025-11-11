@@ -38,10 +38,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VersionService {
 
-
-    @Value("${upload.folder}")
-    private String uploadFolder;
-
+    @Value("${domain.name}")
+    private String domainName;
 
     private final VersionRepository versionRepository;
     private final UserRepository userRepository;
@@ -51,12 +49,6 @@ public class VersionService {
     @Transactional
     public ResponseEntity<ResultDTO> saveVersion(CustomUserDetails currentUser, VersionPayload versionPayload) {
 
-        Version version = versionRepository.findVersionByVersion(versionPayload.getVersion());
-
-        if (version != null) {
-            throw new AppBadRequestException("Version with this version = " + versionPayload.getVersion() + " exists");
-        }
-
         User user = findUserById(currentUser.getId());
 
         Application application = applicationRepository.findById(versionPayload.getApplicationId()).orElseThrow(() -> {
@@ -65,6 +57,17 @@ public class VersionService {
 
         if (!application.getUser().getId().equals(user.getId())) {
             throw new AppForbiddenException("You do not have permission to modify this application. applicationId = " + versionPayload.getApplicationId());
+        }
+        List<Version> versions = versionRepository.findAllByVersion(versionPayload.getVersion());
+
+        if (versions != null && !versions.isEmpty()) {
+            for (Version v : versions) {
+                if (v.getVersion().equalsIgnoreCase(versionPayload.getVersion()) &&
+                        v.getApplication().getId().equals(application.getId())) {
+                    throw new AppBadRequestException("This version of the application exists." +
+                            "appplication = " + application.getName() + ". version = " + v.getVersion());
+                }
+            }
         }
 
         Attachment attachment = attachmentRepository.findAttachmentByHashId(versionPayload.getAttachmentHashId());
@@ -77,10 +80,10 @@ public class VersionService {
             throw new AppForbiddenException("You do not have permission to modify this attachment. attachmentHashId = " + versionPayload.getAttachmentHashId());
         }
 
-        version = versionRepository.save(Version.builder()
+        Version version = versionRepository.save(Version.builder()
                 .version(versionPayload.getVersion())
-                .url(attachment.getLink())
-                .hash(generateHash(versionPayload.getVersion(), attachment.getLink()))
+                .url(domainName + "/file/download/" + attachment.getHashId())
+                .hash(generateHash(versionPayload.getVersion(), attachment.getHashId()))
                 .releaseNotes(versionPayload.getReleaseNotes())
                 .user(user)
                 .application(application)
@@ -103,9 +106,7 @@ public class VersionService {
         if (versions == null) {
             throw new AppItemNotFoundException("Versions not found this applicationId = " + applicationId);
         }
-        ListDataDTO listDTO = ConvertEntityToDTO.VersionListToListDTO(versions);
-
-        return ResponseEntity.ok(ResultDTO.success(listDTO));
+        return ResponseEntity.ok(ResultDTO.success(ConvertEntityToDTO.VersionListWithUserToListDTO(versions)));
     }
 
     public ResponseEntity<ResultDTO> getVersionById(CustomUserDetails currentUser, Long id) {
@@ -116,12 +117,12 @@ public class VersionService {
         return ResponseEntity.ok(ResultDTO.success(ConvertEntityToDTO.VersionToVersionDTO(version)));
     }
 
-    public ResponseEntity<ResultDTO> getVersionByVersion(CustomUserDetails currentUser, String version) {
-        Version versionEntity = versionRepository.findVersionByVersion(version);
-        if (versionEntity == null) {
-            throw new AppItemNotFoundException("Version not found this version = " + version);
+    public ResponseEntity<ResultDTO> getVersionsByVersion(CustomUserDetails currentUser, String version) {
+        List<Version> versions = versionRepository.findAllByVersion(version);
+        if (versions == null) {
+            throw new AppItemNotFoundException("Versions not found this version = " + version);
         }
-        return ResponseEntity.ok(ResultDTO.success(ConvertEntityToDTO.VersionToVersionDTO(versionEntity)));
+        return ResponseEntity.ok(ResultDTO.success(ConvertEntityToDTO.VersionListWithUserToListDTO(versions)));
     }
 
     public ResponseEntity<ResultDTO> getVersionsByApplicationName(CustomUserDetails currentUser, String name) {

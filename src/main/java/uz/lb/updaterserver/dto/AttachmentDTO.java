@@ -20,7 +20,7 @@ public class AttachmentDTO {
     String hashId;
     String contentType;
     String extension;
-    String link;
+//    String link;
     Float fileSize;
 
     Long userId;

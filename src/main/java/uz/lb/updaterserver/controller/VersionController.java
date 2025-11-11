@@ -46,7 +46,7 @@ public class VersionController {
     @GetMapping("/version")
     public ResponseEntity<ResultDTO> getVersionByVersion(@AuthenticationPrincipal CustomUserDetails currentUser,
                                                          @RequestParam(value = "version") String version) {
-        return versionService.getVersionByVersion(currentUser, version);
+        return versionService.getVersionsByVersion(currentUser, version);
     }
 
     @GetMapping("/versions-by-version")
