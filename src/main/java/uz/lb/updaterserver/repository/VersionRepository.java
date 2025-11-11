@@ -10,18 +10,29 @@ import uz.lb.updaterserver.entity.Application;
 import uz.lb.updaterserver.entity.Version;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
-public interface VersionRepository extends JpaRepository<Version, Long> {
+public interface VersionRepository extends JpaRepository<Version, String> {
 
     List<Version> findAllByVersion(String version);
-    Version findVersionById(Long id);
+    Version findVersionById(String id);
 
     @Query("""
                 SELECT v
                 FROM Version v
                 WHERE v.application.id = :applicationId
             """)
-    List<Version> getVersionByApplicationId(@Param("applicationId") Long applicationId);
+    List<Version> getVersionByApplicationId(@Param("applicationId") String applicationId);
+
+    @Query("""
+        SELECT v FROM Version v
+        WHERE v.application.id = :appId
+        ORDER BY v.createdAt DESC
+        LIMIT 1
+        """)
+    Version findLatestVersionByApplicationId(@Param("appId") String appId);
+
+
 }

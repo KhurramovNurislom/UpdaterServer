@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 public class CustomUserDetails implements UserDetails {
 
-    private Long id;
+    private String id;
     private String login;
     private String password;
     private RoleEnum role;
@@ -98,7 +98,7 @@ public class CustomUserDetails implements UserDetails {
         return status == GeneralStatus.ACTIVE && Boolean.TRUE.equals(visible);
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

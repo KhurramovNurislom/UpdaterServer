@@ -33,13 +33,14 @@ public class VersionController {
 
     @GetMapping("/versions-by-application-id/{applicationId}")
     public ResponseEntity<ResultDTO> getAllVersionsByApplicationId(@AuthenticationPrincipal CustomUserDetails currentUser,
-                                                                   @PathVariable("applicationId") Long applicationId) {
+                                                                   @PathVariable("applicationId") String applicationId) {
         return versionService.getAllVersionsByApplicationId(currentUser, applicationId);
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<ResultDTO> getVersionById(@AuthenticationPrincipal CustomUserDetails currentUser,
-                                                    @PathVariable(value = "id") Long id) {
+                                                    @PathVariable(value = "id") String id) {
         return versionService.getVersionById(currentUser, id);
     }
 
@@ -57,7 +58,7 @@ public class VersionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ResultDTO> updateVersionById(@AuthenticationPrincipal CustomUserDetails currentUser,
-                                                       @PathVariable(value = "id") Long id,
+                                                       @PathVariable(value = "id") String id,
                                                        @RequestBody VersionPayload versionPayload,
                                                        @RequestParam(value = "file") MultipartFile multipartFile) {
         return versionService.updateVersionById(currentUser, id, versionPayload, multipartFile);
@@ -65,7 +66,7 @@ public class VersionController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResultDTO> deleteVersionById(@AuthenticationPrincipal CustomUserDetails currentUser,
-                                                       @PathVariable(value = "id") Long id) {
+                                                       @PathVariable(value = "id") String id) {
         return versionService.deleteVersionById(currentUser, id);
     }
 

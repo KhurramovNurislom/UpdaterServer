@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 @Transactional
-public interface ApplicationRepository extends JpaRepository<Application, Long> {
+public interface ApplicationRepository extends JpaRepository<Application, String> {
 
     Application findApplicationByName(String name);
 

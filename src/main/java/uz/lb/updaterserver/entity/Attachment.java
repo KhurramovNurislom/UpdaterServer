@@ -23,8 +23,8 @@ import java.util.Date;
 public class Attachment implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String id;
 
     @Column(nullable = false)
     String fileName;
@@ -55,10 +55,10 @@ public class Attachment implements Serializable {
 
 
     @Column(name = "created_by_user_id")
-    Long createdByUserId;
+    String createdByUserId;
 
     @Column(name = "updated_by_user_id")
-    Long updatedByUserId;
+    String updatedByUserId;
 
     @JsonIgnore
     @CreationTimestamp

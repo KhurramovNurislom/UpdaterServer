@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResultDTO> getUserById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") Long id) {
+    public ResponseEntity<ResultDTO> getUserById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") String id) {
         return userService.getUserById(currentUser, id);
     }
 
@@ -45,12 +45,12 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResultDTO> updateUserById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") Long id, @RequestBody UserPayload userPayload) {
+    public ResponseEntity<ResultDTO> updateUserById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") String id, @RequestBody UserPayload userPayload) {
         return userService.updateUserById(currentUser, id, userPayload);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResultDTO> deleteUserById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") Long id) {
+    public ResponseEntity<ResultDTO> deleteUserById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") String id) {
         return userService.deleteUserById(currentUser, id);
     }
 

@@ -43,14 +43,23 @@ public class ConvertEntityToDTO {
         applicationDTO.setId(application.getId());
         applicationDTO.setName(application.getName());
         applicationDTO.setDescriptions(application.getDescriptions());
-        if (application.getVersions() != null && !application.getVersions().isEmpty()) {
-            ListDataDTO listData = VersionListToListDTO(application.getVersions());
-            applicationDTO.setVersions((List<VersionDTO>) listData.getData());
-        }
+
         if (application.getCreatedByUserId() != null)
             applicationDTO.setCreatedUserId(application.getCreatedByUserId());
         if (application.getUpdatedByUserId() != null)
             applicationDTO.setUpdatedUserId(application.getUpdatedByUserId());
+        return applicationDTO;
+    }
+
+
+    public static ApplicationDTO ApplicationWithVersionsToApplicationDTO(Application application) {
+        ApplicationDTO applicationDTO = ApplicationToApplicationDTO(application);
+
+        if (application.getVersions() != null && !application.getVersions().isEmpty()) {
+            ListDataDTO listData = VersionListToListDTO(application.getVersions());
+            applicationDTO.setVersions((List<VersionDTO>) listData.getData());
+        }
+
         return applicationDTO;
     }
 

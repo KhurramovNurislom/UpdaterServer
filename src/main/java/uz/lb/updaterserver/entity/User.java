@@ -28,9 +28,8 @@ import java.util.List;
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String id;
 
     @Column(unique = true, nullable = false, name = "login")
     String login;
@@ -62,10 +61,10 @@ public class User implements Serializable {
 
 
     @Column(name = "created_by_user_id")
-    Long createdByUserId;
+    String createdByUserId;
 
     @Column(name = "updated_by_user_id")
-    Long updatedByUserId;
+    String updatedByUserId;
 
     @JsonIgnore
     @CreationTimestamp

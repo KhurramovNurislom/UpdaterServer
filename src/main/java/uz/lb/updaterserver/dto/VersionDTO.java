@@ -14,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY, content = JsonInclude.Include.NON_NULL)
 public class VersionDTO {
 
-    Long id;
+    String id;
 
     String version;
     String url;
@@ -22,9 +22,9 @@ public class VersionDTO {
     String releaseNotes;
 
     UserDTO userDTO;
-    Long applicationId;
+    String applicationId;
     AttachmentDTO attachmentDTO;
 
-    Long createdUserId;
-    Long updatedUserId;
+    String createdUserId;
+    String updatedUserId;
 }

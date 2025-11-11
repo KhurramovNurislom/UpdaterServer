@@ -29,6 +29,7 @@ import uz.lb.updaterserver.utils.ConvertEntityToDTO;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -96,12 +97,23 @@ public class VersionService {
 
         attachmentRepository.save(attachment);
 
+        List<Version> v = new ArrayList<>();
+        if (application.getVersions() != null && !application.getVersions().isEmpty())
+            v.addAll(application.getVersions());
+
+        v.add(version);
+
+        application.getVersions().clear();
+        application.getVersions().addAll(v);
+
+        applicationRepository.save(application);
+
         return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.VersionToVersionDTO(version)));
     }
 
 
     @Transactional
-    public ResponseEntity<ResultDTO> getAllVersionsByApplicationId(CustomUserDetails currentUser, Long applicationId) {
+    public ResponseEntity<ResultDTO> getAllVersionsByApplicationId(CustomUserDetails currentUser, String applicationId) {
         List<Version> versions = versionRepository.getVersionByApplicationId(applicationId);
         if (versions == null) {
             throw new AppItemNotFoundException("Versions not found this applicationId = " + applicationId);
@@ -109,7 +121,7 @@ public class VersionService {
         return ResponseEntity.ok(ResultDTO.success(ConvertEntityToDTO.VersionListWithUserToListDTO(versions)));
     }
 
-    public ResponseEntity<ResultDTO> getVersionById(CustomUserDetails currentUser, Long id) {
+    public ResponseEntity<ResultDTO> getVersionById(CustomUserDetails currentUser, String id) {
         Version version = versionRepository.findVersionById(id);
         if (version == null) {
             throw new AppItemNotFoundException("Version not found this id = " + id);
@@ -131,19 +143,19 @@ public class VersionService {
 
 
     @Transactional
-    public ResponseEntity<ResultDTO> updateVersionById(CustomUserDetails currentUser, Long id, VersionPayload versionPayload, MultipartFile multipartFile) {
+    public ResponseEntity<ResultDTO> updateVersionById(CustomUserDetails currentUser, String id, VersionPayload versionPayload, MultipartFile multipartFile) {
 
         return null;
     }
 
     @Transactional
-    public ResponseEntity<ResultDTO> deleteVersionById(CustomUserDetails id, Long versionPayload) {
+    public ResponseEntity<ResultDTO> deleteVersionById(CustomUserDetails id, String versionPayload) {
 
         return null;
     }
 
     /*********************************************************************************************************************/
-    private User findUserById(Long userId) {
+    private User findUserById(String userId) {
         return userRepository.findById(userId).orElseThrow(() -> {
             throw new AppItemNotFoundException("user not found with this id = " + userId);
         });

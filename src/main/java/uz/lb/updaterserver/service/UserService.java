@@ -104,12 +104,12 @@ public class UserService {
         return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.UserListToListDTO(users)));
     }
 
-    public ResponseEntity<ResultDTO> getUserById(CustomUserDetails currentUser, Long id) {
+    public ResponseEntity<ResultDTO> getUserById(CustomUserDetails currentUser, String id) {
         return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.UserToUserDTO(findUserById(id))));
     }
 
     @Transactional
-    public ResponseEntity<ResultDTO> updateUserById(CustomUserDetails currentUser, Long id, UserPayload userPayload) {
+    public ResponseEntity<ResultDTO> updateUserById(CustomUserDetails currentUser, String id, UserPayload userPayload) {
         User updaterUser = findUserById(currentUser.getId());
         if (updaterUser.getRole().equals(RoleEnum.ROLE_ADMIN) || currentUser.getId() == id) {
             User user = findUserById(id);
@@ -130,18 +130,19 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<ResultDTO> deleteUserById(CustomUserDetails currentUser, Long id) {
+    public ResponseEntity<ResultDTO> deleteUserById(CustomUserDetails currentUser, String id) {
         User deleterUser = findUserById(currentUser.getId());
         if (deleterUser.getRole().equals(RoleEnum.ROLE_ADMIN) || currentUser.getId() == id) {
             User user = findUserById(id);
-            userRepository.delete(user);
+            user.setStatus(GeneralStatus.DELETED);
+            userRepository.save(user);
             return ResponseEntity.ok(new ResultDTO().success("id = " + id + " user deleted."));
         }
         throw new AppForbiddenException("Forbidden...");
     }
 
     /*********************************************************************************************************************/
-    private User findUserById(Long userId) {
+    private User findUserById(String userId) {
         return userRepository.findById(userId).orElseThrow(() -> {
             throw new AppItemNotFoundException("user not found with this id = " + userId);
         });

@@ -32,8 +32,14 @@ public class ApplicationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResultDTO> getApplicationById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") Long id) {
+    public ResponseEntity<ResultDTO> getApplicationById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") String id) {
         return applicationService.getApplicationById(currentUser, id);
+    }
+
+
+    @GetMapping("/last-version/{applicationId}")
+    public ResponseEntity<ResultDTO> getLastVersionByApplicationId(@PathVariable("applicationId") String applicationId) {
+        return applicationService.getLastVersionByApplicationId(applicationId);
     }
 
     @GetMapping("/name")
@@ -47,12 +53,12 @@ public class ApplicationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResultDTO> updateApplicationById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") Long id, @RequestBody ApplicationPayload applicationPayload) {
+    public ResponseEntity<ResultDTO> updateApplicationById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") String id, @RequestBody ApplicationPayload applicationPayload) {
         return applicationService.updateApplicationById(currentUser, id, applicationPayload);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResultDTO> deleteApplicationById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") Long id) {
+    public ResponseEntity<ResultDTO> deleteApplicationById(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable(value = "id") String id) {
         return applicationService.deleteApplicationById(currentUser, id);
     }
 }

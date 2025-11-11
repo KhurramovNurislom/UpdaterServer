@@ -17,10 +17,10 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY, content = JsonInclude.Include.NON_NULL)
 public class UserDTO {
-    Long id;
+    String id;
     String login;
     String role;
     List<ApplicationDTO> applications;
-    Long createdUserId;
-    Long updatedUserId;
+    String createdUserId;
+    String updatedUserId;
 }

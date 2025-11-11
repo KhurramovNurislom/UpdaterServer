@@ -157,7 +157,7 @@ public class AttachmentService {
         else return resultDTO.success(attachment);
     }
 
-    private User findUserById(Long userId) {
+    private User findUserById(String userId) {
         return userRepository.findById(userId).orElseThrow(() -> {
             throw new AppItemNotFoundException("user not found with this id = " + userId);
         });

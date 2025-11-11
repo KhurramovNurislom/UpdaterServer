@@ -1,22 +1,23 @@
-package uz.lb.updaterserver.payload;
+package uz.lb.updaterserver.dto;
 
-
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.web.ProjectedPayload;
 
 import java.util.List;
 
 @Data
-@ProjectedPayload
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ApplicationPayload {
+@JsonInclude(value = JsonInclude.Include.NON_EMPTY, content = JsonInclude.Include.NON_NULL)
+public class AppDTO {
     String name;
-    String descriptions;
-    List<String> versionIds;
+    String version;
+    String url;
+    String releaseNotes;
+    String hash;
 }

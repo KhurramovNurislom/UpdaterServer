@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY, content = JsonInclude.Include.NON_NULL)
 public class AttachmentDTO {
-    Long id;
+    String id;
     String fileName;
     String hashId;
     String contentType;
@@ -23,11 +23,11 @@ public class AttachmentDTO {
 //    String link;
     Float fileSize;
 
-    Long userId;
-    Long applicationId;
-    Long versionId;
+    String userId;
+    String applicationId;
+    String versionId;
 
-    Long createdUserId;
-    Long updatedUserId;
+    String createdUserId;
+    String updatedUserId;
 
 }

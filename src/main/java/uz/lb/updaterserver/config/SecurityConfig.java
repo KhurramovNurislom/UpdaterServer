@@ -60,6 +60,9 @@ public class SecurityConfig {
             //registration
             "/user/reg",
 
+            //last-version
+            "/application/last-version/*",
+            
             //files
             "/file/preview/**",
             "/file/download/**",

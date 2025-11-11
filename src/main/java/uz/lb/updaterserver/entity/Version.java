@@ -25,8 +25,8 @@ import java.util.Date;
 public class Version implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String id;
 
     @Column(name = "version", nullable = false)
     String version;
@@ -64,10 +64,10 @@ public class Version implements Serializable {
     Boolean visible = Boolean.TRUE;
 
     @Column(name = "created_by_user_id")
-    Long createdByUserId;
+    String createdByUserId;
 
     @Column(name = "updated_by_user_id")
-    Long updatedByUserId;
+    String updatedByUserId;
 
     @JsonIgnore
     @CreationTimestamp

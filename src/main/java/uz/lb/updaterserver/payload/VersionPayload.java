@@ -21,7 +21,7 @@ public class VersionPayload {
     String version;
 
     @NotBlank(message = "applicationId must not be empty.")
-    Long applicationId;
+    String applicationId;
 
     @NotBlank(message = "releaseNotes must not be empty.")
     String releaseNotes;
