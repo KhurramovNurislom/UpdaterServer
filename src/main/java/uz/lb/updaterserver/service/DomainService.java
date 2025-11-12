@@ -17,6 +17,7 @@ import uz.lb.updaterserver.exception.AppItemNotFoundException;
 import uz.lb.updaterserver.payload.DomainPayload;
 import uz.lb.updaterserver.repository.DomainRepository;
 import uz.lb.updaterserver.utils.ConvertEntityToDTO;
+
 import java.util.List;
 
 @Slf4j
@@ -69,19 +70,23 @@ public class DomainService {
         return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.DomainToDomainDTO(domain)));
     }
 
-    public ResponseEntity<ResultDTO> getDomainByDomain(DomainPayload domainPayload) {
+    public ResponseEntity<ResultDTO> getDomainsByDomain(DomainPayload domainPayload) {
 
-        Domain domain = domainRepository.findDomainByDomain(domainPayload.getDomain());
+        List<Domain> domains = domainRepository.findDomainsByDomain(domainPayload.getDomain());
 
-        if (domain == null) {
+        if (domains == null || domains.isEmpty()) {
             throw new AppItemNotFoundException("domain not found with this domain = " + domainPayload.getDomain());
         }
 
-        if (!domain.getStatus().equals(GeneralStatus.ACTIVE) || !domain.getVisible().equals(Boolean.TRUE)) {
-            throw new AppItemNotFoundException("no active visible domains found");
+        List<Domain> domainList = domains.stream()
+                .filter(domain -> Boolean.TRUE.equals(domain.getVisible()) && domain.getStatus() == GeneralStatus.ACTIVE)
+                .toList();
+
+        if (domainList == null || domainList.isEmpty()) {
+            throw new AppItemNotFoundException("domain not found with this domain = " + domainPayload.getDomain());
         }
 
-        return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.DomainToDomainDTO(domain)));
+        return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.DomainListToDomainDTOList(domainList)));
     }
 
     public ResponseEntity<ResultDTO> getDomainForApplications() {

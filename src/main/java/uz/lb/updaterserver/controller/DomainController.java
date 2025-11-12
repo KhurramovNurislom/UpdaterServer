@@ -37,7 +37,7 @@ public class DomainController {
 
     @GetMapping("/domain")
     public ResponseEntity<ResultDTO> getDomainByDomain(@RequestBody DomainPayload domainPayload) {
-        return domainService.getDomainByDomain(domainPayload);
+        return domainService.getDomainsByDomain(domainPayload);
     }
 
     @GetMapping("/for-application")
