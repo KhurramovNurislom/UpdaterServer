@@ -52,14 +52,14 @@ public class DomainService {
         }
 
         List<Domain> domainsResult = domains.stream()
-                .filter(domain -> Boolean.TRUE.equals(domain.getVisible()) && domain.getStatus() == GeneralStatus.ACTIVE)
+                .filter(domain -> Boolean.TRUE.equals(domain.getVisible()) && domain.getStatus().equals(GeneralStatus.ACTIVE))
                 .toList();
 
         if (domainsResult.isEmpty()) {
             throw new AppItemNotFoundException("no active visible domains found");
         }
 
-        return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.DomainListToDomainDTOList(domains)));
+        return ResponseEntity.ok(new ResultDTO().success(ConvertEntityToDTO.DomainListToDomainDTOList(domainsResult)));
     }
 
     public ResponseEntity<ResultDTO> getDomainById(String id) {
@@ -107,14 +107,16 @@ public class DomainService {
     @Transactional
     public ResponseEntity<ResultDTO> updateDomainById(CustomUserDetails currentUser, String id, DomainPayload domainPayload) {
 
-        if (!currentUser.getRole().equals(RoleEnum.ROLE_ADMIN) || currentUser.getId() != id) {
+        Domain domain = findDomainById(id);
+
+        if (domain == null) {
+            throw new AppItemNotFoundException("domain not found with this domainId = " + id);
+        }
+
+        if (!currentUser.getRole().equals(RoleEnum.ROLE_ADMIN) || !currentUser.getId().equals(domain.getCreatedByUserId())) {
             throw new AppForbiddenException("Permission is not available for this Role. role = " + currentUser.getRole());
         }
-        Domain domain = domainRepository.findDomainByDomain(domainPayload.getDomain());
-        if (domain != null && domain.getId() != id) {
-            throw new AppBadRequestException("Domain with this domain = " + domainPayload.getDomain() + " exists");
-        }
-        domain = findDomainById(id);
+
         domain.setDomain(domainPayload.getDomain());
         domain.setVisible(domainPayload.getVisible() == null ? Boolean.TRUE : domainPayload.getVisible());
         domain.setStatus(domainPayload.getStatus() == null ? GeneralStatus.ACTIVE : domainPayload.getStatus());
@@ -126,11 +128,16 @@ public class DomainService {
     @Transactional
     public ResponseEntity<ResultDTO> deleteDomainById(CustomUserDetails currentUser, String id) {
 
-        if (!currentUser.getRole().equals(RoleEnum.ROLE_ADMIN) || currentUser.getId() != id) {
+        Domain domain = findDomainById(id);
+
+        if (domain == null) {
+            throw new AppItemNotFoundException("domain not found with this domainId = " + id);
+        }
+
+        if (!currentUser.getRole().equals(RoleEnum.ROLE_ADMIN) || !currentUser.getId().equals(domain.getCreatedByUserId())) {
             throw new AppForbiddenException("Permission is not available for this Role. role = " + currentUser.getRole());
         }
 
-        Domain domain = findDomainById(id);
         domain.setStatus(GeneralStatus.DELETED);
         domain.setUpdatedByUserId(currentUser.getId());
         domainRepository.save(domain);
