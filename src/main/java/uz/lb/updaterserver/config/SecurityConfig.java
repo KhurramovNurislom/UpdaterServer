@@ -62,10 +62,14 @@ public class SecurityConfig {
 
             //last-version
             "/application/last-version/*",
-            
+
             //files
             "/file/preview/**",
             "/file/download/**",
+
+            // domain
+            "/domain/for-application"
+
 
     };
 

@@ -35,7 +35,7 @@ public class ConvertEntityToDTO {
         for (User user : users) {
             resultList.add(UserToUserDTO(user));
         }
-        return new ListDataDTO(resultList ,resultList.size());
+        return new ListDataDTO(resultList, resultList.size());
     }
 
     public static ApplicationDTO ApplicationToApplicationDTO(Application application) {
@@ -75,7 +75,7 @@ public class ConvertEntityToDTO {
         for (Application application : applications) {
             resultList.add(ApplicationToApplicationDTO(application));
         }
-        return new ListDataDTO(resultList ,resultList.size());
+        return new ListDataDTO(resultList, resultList.size());
     }
 
     public static ListDataDTO ApplicationWithUserListToListDTO(List<Application> applications) {
@@ -83,7 +83,7 @@ public class ConvertEntityToDTO {
         for (Application application : applications) {
             resultList.add(ApplicationToApplicationWithUserDTO(application));
         }
-        return new ListDataDTO(resultList ,resultList.size());
+        return new ListDataDTO(resultList, resultList.size());
     }
 
 
@@ -119,7 +119,7 @@ public class ConvertEntityToDTO {
         for (Version version : versions) {
             resultList.add(VersionWithUserToVersionDTO(version));
         }
-        return new ListDataDTO(resultList ,resultList.size());
+        return new ListDataDTO(resultList, resultList.size());
     }
 
     public static ListDataDTO VersionListToListDTO(List<Version> versions) {
@@ -127,7 +127,7 @@ public class ConvertEntityToDTO {
         for (Version version : versions) {
             resultList.add(VersionToVersionDTO(version));
         }
-        return new ListDataDTO(resultList ,resultList.size());
+        return new ListDataDTO(resultList, resultList.size());
     }
 
     public static AttachmentDTO AttachmentToAttachmentDTO(Attachment attachment) {
@@ -166,6 +166,31 @@ public class ConvertEntityToDTO {
         for (Attachment attachment : attachments) {
             resultList.add(AttachmentToAttachmentDTO(attachment));
         }
-        return new ListDataDTO(resultList ,resultList.size());
+        return new ListDataDTO(resultList, resultList.size());
     }
+
+    public static DomainDTO DomainToDomainDTO(Domain domain) {
+        DomainDTO domainDTO = new DomainDTO();
+
+        domainDTO.setId(domain.getId());
+        domainDTO.setDomain(domain.getDomain());
+
+        if (domain.getCreatedByUserId() != null)
+            domainDTO.setCreatedUserId(domain.getCreatedByUserId());
+
+        if (domain.getUpdatedByUserId() != null)
+            domainDTO.setUpdatedUserId(domain.getUpdatedByUserId());
+
+        return domainDTO;
+    }
+
+
+    public static ListDataDTO DomainListToDomainDTOList(List<Domain> domains) {
+        List<DomainDTO> resultList = new ArrayList<>();
+        for (Domain domain : domains) {
+            resultList.add(DomainToDomainDTO(domain));
+        }
+        return new ListDataDTO(resultList, resultList.size());
+    }
+
 }
